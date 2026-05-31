@@ -1,0 +1,23 @@
+<svg width="900" height="1200" viewBox="0 0 900 1200" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bg" x1="90" y1="80" x2="840" y2="1120" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#14353b"/>
+      <stop offset="1" stop-color="#d9a441"/>
+    </linearGradient>
+    <linearGradient id="panel" x1="160" y1="130" x2="760" y2="1030" gradientUnits="userSpaceOnUse">
+      <stop stop-color="rgba(255,255,255,0.9)" stop-opacity="0.9"/>
+      <stop offset="1" stop-color="rgba(255,255,255,0.72)" stop-opacity="0.72"/>
+    </linearGradient>
+  </defs>
+  <rect width="900" height="1200" rx="56" fill="url(#bg)"/>
+  <circle cx="760" cy="190" r="132" fill="rgba(255,255,255,0.08)"/>
+  <circle cx="174" cy="980" r="164" fill="rgba(255,255,255,0.08)"/>
+  <rect x="120" y="120" width="660" height="960" rx="42" fill="#f8f1e5" fill-opacity="0.96"/>
+  <path d="M285 314C285 276.997 314.997 247 352 247H550C587.003 247 617 276.997 617 314V690C617 706.569 603.569 720 587 720H402C377.147 720 357 740.147 357 765V810C357 819.941 348.941 828 339 828H321C301.118 828 285 811.882 285 792V314Z" fill="#14353b" fill-opacity="0.92"/>
+  <path d="M340 274H560C578.778 274 594 289.222 594 308V681C594 692.046 585.046 701 574 701H397C369.386 701 347 723.386 347 751V774" stroke="#f8f1e5" stroke-width="18" stroke-linecap="round"/>
+  <line x1="449" y1="286" x2="449" y2="694" stroke="#d9a441" stroke-width="14" stroke-linecap="round"/>
+  <circle cx="449" cy="377" r="18" fill="#d9a441"/>
+  <text x="170" y="920" fill="#14353b" font-size="78" font-family="Georgia, serif" font-weight="700">Atomic Habits</text>
+  <text x="170" y="990" fill="#14353b" fill-opacity="0.76" font-size="34" font-family="Arial, sans-serif" letter-spacing="4">JAMES CLEAR</text>
+  <text x="170" y="176" fill="#14353b" fill-opacity="0.66" font-size="28" font-family="Arial, sans-serif" letter-spacing="10">BOOKMOOK EDITION</text>
+</svg>
