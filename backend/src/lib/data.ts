@@ -8,8 +8,10 @@ export interface IBook {
   price: number;
   image: string;
   page: number;
+  tags: string[];
   format: string;
   slug: string;
+  rating: number;
 }
 
 export interface IAuthor {
@@ -30,6 +32,8 @@ export interface IUser {
 export interface IComment {
   text: string;
   rating: number;
+  avatar: string;
+  location: string;
   user: Types.ObjectId;
   book: Types.ObjectId;
 }

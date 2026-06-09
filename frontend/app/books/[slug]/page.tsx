@@ -16,12 +16,8 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { books, getBookBySlug, getRelatedBooks } from '@/lib/data';
-
-export function generateStaticParams() {
-  return books.map((book) => ({
-    slug: book.slug,
-  }));
-}
+import { bookService } from '@/services/book.service';
+import { IBookPopulated } from '@/lib/type';
 
 export default async function BookDetailsPage({
   params,
@@ -30,6 +26,7 @@ export default async function BookDetailsPage({
 }) {
   const { slug } = await params;
   const book = getBookBySlug(slug);
+  const books = await bookService.getBookBySlug(slug);
 
   if (!book) {
     notFound();
@@ -54,8 +51,8 @@ export default async function BookDetailsPage({
         <div className="space-y-6">
           <div className="relative aspect-[3/4] overflow-hidden rounded-[32px] border border-border bg-muted/60 shadow-glow">
             <Image
-              src={book.cover}
-              alt={book.title}
+              src={books.image}
+              alt={books.title}
               fill
               className="object-cover"
               sizes="(max-width: 1024px) 100vw, 34vw"
@@ -68,7 +65,7 @@ export default async function BookDetailsPage({
         <div className="space-y-8">
           <div className="space-y-4">
             <div className="flex flex-wrap gap-2">
-              {book.tags.map((tag) => (
+              {books.tags.map((tag) => (
                 <Badge
                   key={tag}
                   className="border-border bg-background text-foreground"
@@ -79,17 +76,17 @@ export default async function BookDetailsPage({
             </div>
             <div>
               <p className="text-sm font-medium text-primary">
-                {book.category}
+                {books.category.name}
               </p>
               <h1 className="font-display text-5xl font-semibold tracking-tight sm:text-6xl">
-                {book.title}
+                {books.title}
               </h1>
               <p className="mt-2 text-lg text-muted-foreground">
-                by {book.author}
+                by {books.author.name} ({books.author.bio})
               </p>
             </div>
             <p className="max-w-3xl text-lg text-muted-foreground">
-              {book.longDescription}
+              {books.description}
             </p>
           </div>
 
@@ -99,17 +96,17 @@ export default async function BookDetailsPage({
               <div className="mt-2 flex items-center gap-2 text-amber-500">
                 <Star className="h-5 w-5 fill-current" />
                 <span className="text-xl font-semibold text-foreground">
-                  {book.rating}
+                  {books.rating}
                 </span>
               </div>
             </div>
             <div className="rounded-[24px] border border-border bg-card/70 p-5">
               <p className="text-sm text-muted-foreground">Format</p>
-              <p className="mt-2 text-xl font-semibold">{book.format}</p>
+              <p className="mt-2 text-xl font-semibold">{books.format}</p>
             </div>
             <div className="rounded-[24px] border border-border bg-card/70 p-5">
               <p className="text-sm text-muted-foreground">Pages</p>
-              <p className="mt-2 text-xl font-semibold">{book.pages}</p>
+              <p className="mt-2 text-xl font-semibold">{books.page}</p>
             </div>
           </div>
 
@@ -170,7 +167,7 @@ export default async function BookDetailsPage({
             Reviews and comments
           </h2>
         </div>
-        <BookReviews slug={book.slug} initialReviews={book.reviews} />
+        <BookReviews slug={book.slug} bookId={books._id} />
       </section>
 
       {relatedBooks.length ? (

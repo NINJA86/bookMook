@@ -1,18 +1,18 @@
-import Link from "next/link";
-import { ArrowRight, BookOpenText, Compass } from "lucide-react";
+import Link from 'next/link';
+import { ArrowRight, BookOpenText, Compass } from 'lucide-react';
 
-import { CatalogShell } from "@/components/books/catalog-shell";
-import { BookGrid } from "@/components/books/book-grid";
-import { NewsletterForm } from "@/components/books/newsletter-form";
-import { FeaturedCommentsCarousel } from "@/components/home/featured-comments-carousel";
-import { HeroBookSwiper } from "@/components/home/hero-book-swiper";
-import { TypewriterTitle } from "@/components/home/typewriter-title";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
-import { books, categories, featuredBooks, newArrivals } from "@/lib/data";
+import { CatalogShell } from '@/components/books/catalog-shell';
+import { BookGrid } from '@/components/books/book-grid';
+import { NewsletterForm } from '@/components/books/newsletter-form';
+import { FeaturedCommentsCarousel } from '@/components/home/featured-comments-carousel';
+import { HeroBookSwiper } from '@/components/home/hero-book-swiper';
+import { TypewriterTitle } from '@/components/home/typewriter-title';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent } from '@/components/ui/card';
+import { books, categories, featuredBooks, newArrivals } from '@/lib/data';
 
-const typewriterWords = ["Great Books!", "Read Anywhere!", "کیر:)"];
+const typewriterWords = ['Great Books!', 'Read Anywhere!', 'کیر:)'];
 
 export default function HomePage() {
   return (
@@ -98,7 +98,7 @@ export default function HomePage() {
             ))}
           </div>
         </div>
-        <BookGrid books={featuredBooks} />
+        <BookGrid />
       </section>
 
       <FeaturedCommentsCarousel />

@@ -1,6 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const mongoose_1 = require("mongoose");
+const mongoose_2 = require("mongoose");
 const commentSchema = new mongoose_1.Schema({
     text: {
         type: String,
@@ -22,6 +23,15 @@ const commentSchema = new mongoose_1.Schema({
         ref: 'Book',
         required: true,
     },
+    avatar: {
+        type: String,
+        required: true,
+    },
+    location: {
+        type: String,
+        required: true,
+    },
 }, {
     timestamps: true,
 });
+exports.default = (0, mongoose_2.model)('Comment', commentSchema);

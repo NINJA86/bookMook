@@ -51,6 +51,16 @@ const bookSchema = new Schema<IBook>(
       type: String,
       required: true,
     },
+    rating: {
+      type: Number,
+      required: true,
+      min: 0,
+      max: 5,
+    },
+    tags: {
+      type: [String],
+      default: [],
+    },
   },
   {
     timestamps: true,

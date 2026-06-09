@@ -1,21 +1,12 @@
 import express, { Router } from 'express';
 
-import book from '../model/book.model';
-import { asyncHandler } from '../lib/funcs';
-import {
-  getAllBooks,
-  getBookBySlug,
-  idController,
-  slugController,
-} from '../controller/book.controller';
+import { getAllBooks, getBookBySlug } from '../controller/book.controller';
+import { slugController } from '../middlewares/params.middleware';
 
 const router: Router = express.Router();
 
-router.param('id', idController);
-
-router.param('slug', slugController);
 router.get('/getAll', getAllBooks);
 
-router.get('/:slug', getBookBySlug);
+router.get('/:slug', slugController, getBookBySlug);
 
 export default router;

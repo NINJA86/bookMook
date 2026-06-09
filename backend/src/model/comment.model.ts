@@ -1,5 +1,6 @@
 import { Schema } from 'mongoose';
 import { IComment } from '../lib/data';
+import { model } from 'mongoose';
 
 const commentSchema = new Schema<IComment>(
   {
@@ -26,8 +27,18 @@ const commentSchema = new Schema<IComment>(
       ref: 'Book',
       required: true,
     },
+    avatar: {
+      type: String,
+      required: true,
+    },
+    location: {
+      type: String,
+      required: true,
+    },
   },
   {
     timestamps: true,
   },
 );
+
+export default model<IComment>('Comment', commentSchema);
