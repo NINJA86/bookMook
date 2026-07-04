@@ -1,0 +1,197 @@
+{
+  "categories": [
+    {
+      "id": 1,
+      "name": "Fiction"
+    },
+    {
+      "id": 2,
+      "name": "Self Improvement"
+    },
+    {
+      "id": 3,
+      "name": "Sci-Fi"
+    },
+    {
+      "id": 4,
+      "name": "Business"
+    },
+    {
+      "id": 5,
+      "name": "Magical Realism"
+    },
+    {
+      "id": 6,
+      "name": "Creativity"
+    },
+    {
+      "id": 7,
+      "name": "Literary Fiction"
+    },
+    {
+      "id": 8,
+      "name": "Contemporary"
+    }
+  ],
+  "authors": [
+    {
+      "id": 1,
+      "name": "Matt Haig",
+      "bio": "British author known for fiction exploring life, mental health, and possibility."
+    },
+    {
+      "id": 2,
+      "name": "James Clear",
+      "bio": "Author of Atomic Habits and expert on habit formation."
+    },
+    {
+      "id": 3,
+      "name": "Andy Weir",
+      "bio": "Science fiction writer best known for hard-science novels."
+    },
+    {
+      "id": 4,
+      "name": "Cal Newport",
+      "bio": "Computer science professor and productivity author."
+    },
+    {
+      "id": 5,
+      "name": "Toshikazu Kawaguchi",
+      "bio": "Japanese author of the Before the Coffee Gets Cold series."
+    },
+    {
+      "id": 6,
+      "name": "Rick Rubin",
+      "bio": "Music producer and author focused on creativity."
+    },
+    {
+      "id": 7,
+      "name": "Hanya Yanagihara",
+      "bio": "American novelist and editor."
+    },
+    {
+      "id": 8,
+      "name": "Kazuo Ishiguro",
+      "bio": "Nobel Prize-winning British novelist."
+    }
+  ],
+
+  "books": [
+    {
+      "_id": 1,
+      "title": "The Midnight Library",
+      "authorId": 1,
+      "description": "A luminous novel about regret, possibility, and choosing your life.",
+      "price": 18.99,
+      "categoryId": 1,
+      "image": "/images/the-midnight-library.jpg"
+    },
+    {
+      "_id": 2,
+      "title": "Atomic Habits",
+      "authorId": 2,
+      "description": "Practical systems for behavior change that actually stick.",
+      "price": 22.99,
+      "categoryId": 2,
+      "image": "/images/atomic-habits.jpg"
+    },
+    {
+      "_id": 3,
+      "title": "Project Hail Mary",
+      "authorId": 3,
+      "description": "A hilarious and high-stakes mission to save humanity.",
+      "price": 24.99,
+      "categoryId": 3,
+      "image": "/images/project-hail-mary.jpg"
+    },
+    {
+      "_id": 4,
+      "title": "Deep Work",
+      "authorId": 4,
+      "description": "Train your focus in a distracted world.",
+      "price": 19.99,
+      "categoryId": 4,
+      "image": "/images/deep-work.jpg"
+    },
+    {
+      "_id": 5,
+      "title": "Before the Coffee Gets Cold",
+      "authorId": 5,
+      "description": "Tender, time-bending stories in a quiet Tokyo cafe.",
+      "price": 17.99,
+      "categoryId": 5,
+      "image": "/images/before-the-coffee-gets-cold.jpg"
+    },
+    {
+      "_id": 6,
+      "title": "The Creative Act",
+      "authorId": 6,
+      "description": "A meditative guide to making things with more soul.",
+      "price": 26.99,
+      "categoryId": 6,
+      "image": "/images/the-creative-act.jpg"
+    },
+    {
+      "_id": 7,
+      "title": "A Little Life",
+      "authorId": 7,
+      "description": "A sweeping, intimate portrait of friendship, pain, and endurance.",
+      "price": 23.99,
+      "categoryId": 7,
+      "image": "/images/a-little-life.jpg"
+    },
+    {
+      "_id": 8,
+      "title": "Klara and the Sun",
+      "authorId": 8,
+      "description": "A quiet, haunting story about love, care, and what it means to be human.",
+      "price": 21.99,
+      "categoryId": 8,
+      "image": "/images/klara-and-the-sun.jpg"
+    }
+  ],
+  "users": [
+    {
+      "id": 1,
+      "name": "Mohammad",
+      "email": "mohammad@example.com",
+      "password": "123456"
+    },
+    {
+      "id": 2,
+      "name": "Sara",
+      "email": "sara@example.com",
+      "password": "123456"
+    }
+  ],
+  "comments": [
+    {
+      "id": 1,
+      "text": "Amazing book, highly recommended.",
+      "userId": 1,
+      "bookId": 2,
+      "rating": 5
+    },
+    {
+      "id": 2,
+      "text": "One of the best sci-fi novels I've read.",
+      "userId": 2,
+      "bookId": 3,
+      "rating": 5
+    },
+    {
+      "id": 3,
+      "text": "Very emotional and beautifully written.",
+      "userId": 1,
+      "bookId": 7,
+      "rating": 4
+    },
+    {
+      "id": 4,
+      "text": "A great productivity book.",
+      "userId": 2,
+      "bookId": 4,
+      "rating": 5
+    }
+  ]
+}
