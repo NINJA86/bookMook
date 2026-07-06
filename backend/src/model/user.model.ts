@@ -3,11 +3,11 @@ import { IUser } from '../lib/data';
 
 const userSchema = new Schema<IUser>(
   {
-    name: {
+    phoneNumber: {
       type: String,
       required: true,
     },
-
+    name: { type: String, required: true },
     email: {
       type: String,
       required: true,

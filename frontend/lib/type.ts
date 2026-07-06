@@ -16,10 +16,23 @@ export interface ICategory {
 export interface IUser {
   _id: string;
   name: string;
+  phoneNumber: string;
   email: string;
   password: string;
 }
 
+export interface IRegisterUser {
+  name: string;
+  phoneNumber: string;
+  email: string;
+  password: string;
+}
+
+export interface ILoginUser {
+  phoneNumber?: string;
+  email?: string;
+  password: string;
+}
 export interface IComment {
   _id: string;
   text: string;

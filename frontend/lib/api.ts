@@ -1,20 +1,22 @@
-import { RequestHeaders } from 'next/dist/client/components/router-reducer/fetch-server-response';
-import { RequestInit } from 'next/dist/server/web/spec-extension/request';
-
 export async function apiFetch<T>(
   endpoint: string,
   options?: RequestInit,
 ): Promise<T> {
-  const requestOptions: globalThis.RequestInit = {
+  const res = await fetch(`${'http://localhost:3000'}${endpoint}`, {
     headers: {
       'Content-Type': 'application/json',
       ...options?.headers,
     },
+    credentials: 'include',
+
     ...options,
-  };
-  const res = await fetch(`http://localhost:3000${endpoint}`, requestOptions);
+  });
+
+  const data = await res.json();
   if (!res.ok) {
-    throw new Error('request failed');
+    const err = new Error(data.message) as any;
+    err.fieldErrors = data.fieldErrors; // ← جدا نگه دار
+    throw err;
   }
-  return res.json();
+  return data;
 }

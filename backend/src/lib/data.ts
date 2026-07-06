@@ -25,6 +25,7 @@ export interface ICategory {
 
 export interface IUser {
   name: string;
+  phoneNumber: string;
   email: string;
   password: string;
 }

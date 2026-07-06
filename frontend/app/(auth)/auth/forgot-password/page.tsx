@@ -12,7 +12,7 @@ export default function ForgotPasswordPage() {
         <h1>Reset</h1>
 
         <p className="subtitle">Enter your email to receive a reset link</p>
-        <form action="/auth/check-email">
+        <form action="">
           <input
             type="email"
             name="email"

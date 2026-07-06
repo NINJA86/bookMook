@@ -1,5 +1,4 @@
 import type { Metadata } from 'next';
-import { Fraunces, Manrope } from 'next/font/google';
 import { Toaster } from 'sonner';
 
 import 'swiper/css';
@@ -11,16 +10,6 @@ import '../globals.css';
 import { SiteFooter } from '@/components/layout/site-footer';
 import { SiteHeader } from '@/components/layout/site-header';
 import { ThemeProvider } from '@/components/providers/theme-provider';
-
-// const fraunces = Fraunces({
-//   subsets: ['latin'],
-//   variable: '--font-display',
-// });
-
-// const manrope = Manrope({
-//   subsets: ['latin'],
-//   variable: '--font-body',
-// });
 
 export const metadata: Metadata = {
   title: 'BookMook',
