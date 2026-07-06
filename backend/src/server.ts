@@ -11,7 +11,7 @@ import './model/index';
 dotenv.config();
 const cors = require('cors');
 const app: Express = express();
-const port: number = 3000;
+const port = process.env.PORT;
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
@@ -38,8 +38,4 @@ const startServer = async (): Promise<void> => {
   });
 };
 
-app.get('/test', (req, res) => {
-  res.cookie('test', '123');
-  res.json({ ok: true });
-});
 startServer();

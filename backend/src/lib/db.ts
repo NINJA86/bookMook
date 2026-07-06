@@ -2,7 +2,7 @@ import mongoose from 'mongoose';
 
 const connectDb = async (): Promise<void> => {
   try {
-    await mongoose.connect('mongodb://localhost:27017/bookShop');
+    await mongoose.connect(process.env.MONGO_URI!);
 
     console.log('MongoDB Connected');
   } catch (error) {
