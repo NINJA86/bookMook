@@ -101,12 +101,12 @@ router.post(
       return res.status(400).json({ message: 'password does not match' });
     }
 
-    const resetToken = jwt.sign(
+    const accessToken = jwt.sign(
       { id: existedUser.id, email: existedUser.email },
       process.env.JWT_TOKEN || 'default-sign',
       { expiresIn: '15m' },
     );
-    res.cookie('accessToken', resetToken, {
+    res.cookie('accessToken', accessToken, {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
       sameSite: 'none',
@@ -114,7 +114,7 @@ router.post(
     });
     return res.json({
       message: 'user was successfully logged in',
-      resetToken,
+      accessToken,
     });
     // return res.json(req.body);
   }),
