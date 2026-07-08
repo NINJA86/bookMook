@@ -1,11 +1,11 @@
-# Home Image
+# Home Images
 <img width="1910" height="907" alt="image" src="https://github.com/user-attachments/assets/d9880e84-040d-4371-bff5-d30db8b42a4c" />
 
 <img width="1697" height="891" alt="image" src="https://github.com/user-attachments/assets/d5c059d4-04b6-4ee5-9954-0b5dce37315a" />
 
 <img width="1405" height="830" alt="image" src="https://github.com/user-attachments/assets/830e73ee-2d29-4352-80fd-871ae1e5d4e0" />
 
-# Auth Image
+# Auth Images
 
 <img width="962" height="775" alt="image" src="https://github.com/user-attachments/assets/ff8f2ee6-9351-4477-affb-a6433543fed9" />
 <img width="962" height="775" alt="image" src="https://github.com/user-attachments/assets/a7b4d8b2-228f-48ad-8ac1-1a714f622c43" />
