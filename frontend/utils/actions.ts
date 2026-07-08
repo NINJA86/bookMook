@@ -92,7 +92,7 @@ const sendCodeAction = async (prevstate: any, formData: FormData) => {
   } catch (error: any) {
     return { fieldErrors: error.fieldErrors, error: error.message };
   }
-  cookieStore.set('resetToken', res.accessToken, {
+  cookieStore.set('resetToken', res.resetToken, {
     httpOnly: true,
     secure: false,
     sameSite: 'lax',

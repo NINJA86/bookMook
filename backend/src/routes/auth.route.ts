@@ -7,6 +7,7 @@ import nodeMailer from 'nodemailer';
 import { registerSchema } from '../lib/verifacation';
 const router: Router = express.Router();
 const ACCESS_TOKEN_EXPIRY = 15 * 60 * 1000;
+const RESET_TOKEN_EXPIRY = 10 * 60 * 1000;
 router.post(
   '/register',
   asyncHandler(async (req, res, next) => {
@@ -100,20 +101,20 @@ router.post(
       return res.status(400).json({ message: 'password does not match' });
     }
 
-    const accessToken = jwt.sign(
+    const resetToken = jwt.sign(
       { id: existedUser.id, email: existedUser.email },
       process.env.JWT_TOKEN || 'default-sign',
       { expiresIn: '15m' },
     );
-    res.cookie('accessToken', accessToken, {
+    res.cookie('accessToken', resetToken, {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
       sameSite: 'none',
-      maxAge: ACCESS_TOKEN_EXPIRY,
+      maxAge: RESET_TOKEN_EXPIRY,
     });
     return res.json({
       message: 'user was successfully logged in',
-      accessToken,
+      resetToken,
     });
     // return res.json(req.body);
   }),
@@ -132,7 +133,7 @@ router.post(
     const verificationCode = Math.floor(100000 + Math.random() * 900000);
     const expiresAt = new Date(Date.now() + 10 * 60 * 1000);
 
-    const updatedUser = await userModel.findOneAndUpdate(
+    await userModel.findOneAndUpdate(
       { email },
       {
         resetCode: verificationCode,
@@ -164,7 +165,7 @@ router.post(
   `,
     });
 
-    const accessToken = jwt.sign(
+    const resetToken = jwt.sign(
       {
         id: existedUser.id,
         email: existedUser.email,
@@ -177,7 +178,7 @@ router.post(
 
     return res.status(200).json({
       message: 'Code was successfully sent',
-      accessToken,
+      resetToken,
     });
   }),
 );
