@@ -28,6 +28,8 @@ export interface IUser {
   phoneNumber: string;
   email: string;
   password: string;
+  resetCode: string | null;
+  resetCodeExpiresAt: Date | null;
 }
 
 export interface IComment {

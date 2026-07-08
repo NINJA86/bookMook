@@ -3,9 +3,9 @@ import jwt from 'jsonwebtoken';
 import { asyncHandler } from '../lib/funcs';
 import { userModel } from '../model';
 import bcrypt from 'bcrypt';
-import { loginSchema, registerSchema } from '../lib/verifacation';
+import nodeMailer from 'nodemailer';
+import { registerSchema } from '../lib/verifacation';
 const router: Router = express.Router();
-
 const ACCESS_TOKEN_EXPIRY = 15 * 60 * 1000;
 router.post(
   '/register',
@@ -118,5 +118,137 @@ router.post(
     // return res.json(req.body);
   }),
 );
+router.post(
+  '/reset-code',
+  asyncHandler(async (req, res) => {
+    const { email } = req.body;
 
+    const existedUser = await userModel.findOne({ email });
+
+    if (!existedUser) {
+      return res.status(404).json({ message: 'User does not exist' });
+    }
+
+    const verificationCode = Math.floor(100000 + Math.random() * 900000);
+    const expiresAt = new Date(Date.now() + 10 * 60 * 1000);
+
+    const updatedUser = await userModel.findOneAndUpdate(
+      { email },
+      {
+        resetCode: verificationCode,
+        resetCodeExpiresAt: expiresAt,
+      },
+      { new: true },
+    );
+
+    const transport = nodeMailer.createTransport({
+      host: process.env.SMTP_HOST || 'smtp.gmail.com',
+      port: Number(process.env.SMTP_PORT) || 587,
+      secure: false,
+      auth: {
+        user: process.env.SMTP_USERNAME,
+        pass: process.env.SMTP_PASSWORD,
+      },
+    });
+
+    await transport.verify();
+
+    await transport.sendMail({
+      from: process.env.SMTP_USERNAME,
+      to: existedUser.email,
+      subject: 'Password Recovery',
+      html: `
+    <h2>Password Recovery</h2>
+    <p>Your verification code is:</p>
+    <h1>${verificationCode}</h1>
+  `,
+    });
+
+    const accessToken = jwt.sign(
+      {
+        id: existedUser.id,
+        email: existedUser.email,
+      },
+      process.env.JWT_TOKEN || 'default-sign',
+      {
+        expiresIn: '15m',
+      },
+    );
+
+    return res.status(200).json({
+      message: 'Code was successfully sent',
+      accessToken,
+    });
+  }),
+);
+
+router.post(
+  '/verify-code',
+  asyncHandler(async (req, res, next) => {
+    const { email, code } = req.body;
+    const existedUser = await userModel.findOne({ email });
+
+    if (!existedUser) {
+      return res.status(404).json({
+        message: 'User does not exist',
+      });
+    }
+
+    if (
+      !existedUser.resetCodeExpiresAt ||
+      existedUser.resetCodeExpiresAt.getTime() < Date.now()
+    ) {
+      return res.status(400).json({
+        message: 'Code has expired',
+      });
+    }
+
+    console.log(`main code ${existedUser.resetCode}`);
+    console.log(`user code ${code}`);
+    if (existedUser.resetCode !== code) {
+      return res.status(400).json({
+        message: 'Invalid code',
+      });
+    }
+
+    const resetToken = jwt.sign(
+      {
+        id: existedUser._id,
+        purpose: 'reset-password',
+      },
+      process.env.JWT_TOKEN || 'default-sign',
+      {
+        expiresIn: '10m',
+      },
+    );
+
+    return res.json({
+      message: 'Code verified successfully',
+      resetToken,
+    });
+  }),
+);
+
+router.post(
+  '/reset-password',
+  asyncHandler(async (req, res, next) => {
+    const { password, email } = req.body;
+    const existedUser = await userModel.findOne({ email });
+
+    if (!existedUser) {
+      return res.status(404).json({
+        message: 'User does not exist',
+      });
+    }
+
+    console.log(password);
+    const hashedPassword = await bcrypt.hash(password, 10);
+    await existedUser.updateOne({
+      password: hashedPassword,
+      resetCode: null,
+      resetCodeExpiresAt: null,
+    });
+    res.json({ message: 'Password was successfully reset' });
+  }),
+);
 export default router;

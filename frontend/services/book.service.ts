@@ -43,4 +43,28 @@ export const bookService = {
       body: JSON.stringify(userData),
     });
   },
+  forgotPassword(email: any) {
+    return apiFetch(`/api/auth/reset-code`, {
+      method: 'POST',
+      credentials: 'include',
+      body: JSON.stringify({ email }),
+    });
+  },
+
+  verifyCode(userData: any) {
+    //TODO do not forget to add a specific type for userData
+
+    return apiFetch(`/api/auth/verify-code`, {
+      method: 'POST',
+      credentials: 'include',
+      body: JSON.stringify(userData),
+    });
+  },
+  resetPassword(userData: any) {
+    return apiFetch(`/api/auth/reset-password`, {
+      method: 'POST',
+      credentials: 'include',
+      body: JSON.stringify(userData),
+    });
+  },
 };

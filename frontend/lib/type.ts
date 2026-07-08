@@ -19,6 +19,8 @@ export interface IUser {
   phoneNumber: string;
   email: string;
   password: string;
+  resetCode?: string;
+  resetCodeExpiresAt?: string;
 }
 
 export interface IRegisterUser {

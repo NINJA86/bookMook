@@ -18,6 +18,14 @@ const userSchema = new Schema<IUser>(
       type: String,
       required: true,
     },
+    resetCode: {
+      type: String,
+      default: null,
+    },
+    resetCodeExpiresAt: {
+      type: Date,
+      default: null,
+    },
   },
   {
     timestamps: true,
