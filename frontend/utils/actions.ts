@@ -6,6 +6,7 @@ import { redirect } from 'next/navigation';
 import { RedirectType } from 'next/navigation';
 const RESET_TOKEN_EXPIRY = 10 * 60 * 1000;
 const ACCESS_TOKEN_EXPIRY = 15 * 60 * 1000;
+const REFRESH_TOKEN_EXPIRY = 7 * 24 * 60 * 60;
 const register = async (prevState: any, formData: FormData) => {
   const email = formData.get('email') as string;
   const phoneNumber = formData.get('phoneNumber') as string;
@@ -21,6 +22,13 @@ const register = async (prevState: any, formData: FormData) => {
     return { fieldErrors: error.fieldErrors, error: error.message };
   }
   const cookieStore = await cookies();
+
+  cookieStore.set('refreshToken', res.refreshToken, {
+    httpOnly: true,
+    secure: false,
+    sameSite: 'lax',
+    maxAge: REFRESH_TOKEN_EXPIRY,
+  });
   cookieStore.set('accessToken', res.accessToken, {
     httpOnly: true,
     secure: false,
@@ -141,7 +149,9 @@ const resetPasswordAction = async (prevState: any, formData: FormData) => {
   } catch (error: any) {
     return { error: error.message };
   }
+  const cookieStore = await cookies();
 
+  cookieStore.delete('resetEmail');
   redirect('/auth/login');
 };
 

@@ -18,6 +18,8 @@ const userSchema = new Schema<IUser>(
       type: String,
       required: true,
     },
+    refreshToken: { type: String, default: null },
+
     resetCode: {
       type: String,
       default: null,
