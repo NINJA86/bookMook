@@ -1,14 +1,27 @@
-import mongoose from 'mongoose';
+import { Dialect, Sequelize } from 'sequelize';
 
-const connectDb = async (): Promise<void> => {
-  try {
-    await mongoose.connect(process.env.MONGO_URI!);
+const sequelize: Sequelize = new Sequelize(
+  process.env.SQL_DATABASE!,
+  process.env.SQL_USERNAME!,
+  process.env.SQL_PASSWORD!,
 
-    console.log('MongoDB Connected');
-  } catch (error) {
-    console.error(error);
-    process.exit(1);
+  {
+  host:  process.env.SQL_HOST!,
+  dialect: process.env.SQL_DIALECT! as Dialect,
   }
-};
+);
 
-export default connectDb;
+export const connectToDb = async (): Promise<void> => {
+  try {
+    await sequelize.authenticate()
+    console.log('db connected successfully!')
+    
+  } catch (error) {
+    console.log("err occured during connecting to db", error)
+    
+    process.exit(1)
+  }
+}
+
+
+export default sequelize
