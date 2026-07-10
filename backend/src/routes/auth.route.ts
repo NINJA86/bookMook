@@ -70,8 +70,6 @@ router.post(
 router.post(
   '/login',
   asyncHandler(async (req, res, next) => {
-    res.cookie('salam', 'salamkhobi');
-
     const userData = req.body;
     console.log(userData);
     console.log(userData?.email, userData?.phoneNumber);
@@ -106,15 +104,27 @@ router.post(
       process.env.JWT_TOKEN || 'default-sign',
       { expiresIn: '15m' },
     );
+    const refreshToken = existedUser.refreshToken;
+
+    const ACCESS_TOKEN_EXPIRY = 15 * 60 * 1000;
+    const REFRESH_TOKEN_EXPIRY = 7 * 24 * 60 * 60;
     res.cookie('accessToken', accessToken, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: 'none',
-      maxAge: RESET_TOKEN_EXPIRY,
+      secure: false,
+      sameSite: 'lax',
+      maxAge: ACCESS_TOKEN_EXPIRY,
+    });
+
+    res.cookie('refreshToken', refreshToken, {
+      httpOnly: true,
+      secure: false,
+      sameSite: 'lax',
+      maxAge: REFRESH_TOKEN_EXPIRY,
     });
     return res.json({
       message: 'user was successfully logged in',
       accessToken,
+      refreshToken,
     });
     // return res.json(req.body);
   }),
@@ -252,4 +262,41 @@ router.post(
     res.json({ message: 'Password was successfully reset' });
   }),
 );
+router.post(
+  '/refresh',
+  asyncHandler(async (req, res, next) => {
+    const refreshToken = req.cookies?.refreshToken;
+
+    if (!refreshToken) {
+      return res.status(401).json({ message: 'refresh token not found' });
+    }
+
+    try {
+      const decode: any = jwt.verify(
+        refreshToken,
+        process.env.JWT_TOKEN || 'default-sign',
+      );
+      const user = await userModel.findOne({ refreshToken, _id: decode.id });
+
+      if (!user) {
+        return res.status(401).json({ message: 'invalid refresh token' });
+      }
+      const accessToken = jwt.sign(
+        { id: user._id, email: user.email },
+        process.env.JWT_TOKEN || 'default-sign',
+        { expiresIn: '15m' },
+      );
+      res.cookie('accessToken', accessToken, {
+        httpOnly: true,
+        secure: false,
+        sameSite: 'lax',
+        maxAge: 15 * 60 * 1000,
+      });
+      return res.json({ message: 'accessToken has successfully set' });
+    } catch (error) {
+      return res.status(401).json({ message: 'refresh token expired' });
+    }
+  }),
+);
+
 export default router;

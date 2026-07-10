@@ -24,10 +24,12 @@ export interface ICategory {
 }
 
 export interface IUser {
+  _id: string;
   name: string;
   phoneNumber: string;
   email: string;
   password: string;
+  refreshToken: string | null;
   resetCode: string | null;
   resetCodeExpiresAt: Date | null;
 }

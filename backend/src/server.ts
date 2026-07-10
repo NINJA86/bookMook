@@ -1,10 +1,11 @@
 import express, { Express } from 'express';
 import commentRouter from './routes/comment.route';
 import bookRouter from './routes/book.route';
+import authRouter from './routes/auth.route';
+import userRouter from './routes/user.route';
 import dotenv from 'dotenv';
 
 import cookieParser from 'cookie-parser';
-import authRouter from './routes/auth.route';
 import connectDb from './lib/db';
 import './model/index';
 
@@ -24,10 +25,10 @@ app.use(
     credentials: true,
   }),
 );
-
 app.use('/api/book', bookRouter);
 
 app.use('/api/comment', commentRouter);
+app.use('/api/user', userRouter);
 
 app.use('/api/auth', authRouter);
 const startServer = async (): Promise<void> => {

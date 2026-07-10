@@ -9,6 +9,7 @@ import { IBookPopulated } from '@/lib/type';
 
 export function BookCard({ book }: { book: IBookPopulated }) {
   return (
+    
     <Link href={`/books/${book.slug}`} className="group h-full">
       <Card className="flex h-full flex-col overflow-hidden border-border/60 transition duration-300 hover:-translate-y-1.5 hover:border-primary/50 hover:shadow-glow">
         <div className="relative aspect-[3/4] overflow-hidden bg-muted/60">

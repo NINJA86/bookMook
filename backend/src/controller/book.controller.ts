@@ -9,6 +9,8 @@ const book: Model<IBook> = bookModel;
 // -------------------- CONTROLLERS --------------------
 
 export const getBookBySlug = asyncHandler(async (req, res) => {
+  console.log('cookie set?');
+
   const { slug } = req.params;
 
   const findBookBySlug = await book

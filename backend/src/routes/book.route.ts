@@ -2,11 +2,15 @@ import express, { Router } from 'express';
 
 import { getAllBooks, getBookBySlug } from '../controller/book.controller';
 import { slugController } from '../middlewares/params.middleware';
+import {
+  authenticator,
+  optionalAuthenticator,
+} from '../middlewares/authenticate';
 
 const router: Router = express.Router();
 
-router.get('/getAll', getAllBooks);
+router.get('/getAll', optionalAuthenticator, getAllBooks);
 
-router.get('/:slug', slugController, getBookBySlug);
+router.get('/:slug', optionalAuthenticator, slugController, getBookBySlug);
 
 export default router;

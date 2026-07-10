@@ -74,6 +74,13 @@ const login = async (prevState: any, formData: FormData) => {
     maxAge: ACCESS_TOKEN_EXPIRY,
   });
 
+  cookieStore.set('refreshToken', res.refreshToken, {
+    httpOnly: true,
+    secure: false,
+    sameSite: 'lax',
+    maxAge: REFRESH_TOKEN_EXPIRY,
+  });
+
   redirect('/');
 };
 
