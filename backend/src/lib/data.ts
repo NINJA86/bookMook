@@ -23,15 +23,23 @@ export interface ICategory {
   name: string;
 }
 
-export interface IUser {
-  _id: string;
+// export interface IUser {
+//   _id: string;
+//   name: string;
+//   phoneNumber: string;
+//   email: string;
+//   password: string;
+//   refreshToken: string | null;
+//   resetCode: string | null;
+//   resetCodeExpiresAt: Date | null;
+// }
+
+export interface CreateUserInput {
   name: string;
-  phoneNumber: string;
+  phone_number: string;
   email: string;
   password: string;
-  refreshToken: string | null;
-  resetCode: string | null;
-  resetCodeExpiresAt: Date | null;
+  refresh_token: string;
 }
 
 export interface IComment {

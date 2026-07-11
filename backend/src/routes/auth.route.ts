@@ -5,15 +5,17 @@ import { userModel } from '../model';
 import bcrypt from 'bcrypt';
 import nodeMailer from 'nodemailer';
 import { registerSchema } from '../lib/verifacation';
+import { createUser, findUser } from '../repositories/user.repository';
+import { Op } from 'sequelize';
 const router: Router = express.Router();
 const ACCESS_TOKEN_EXPIRY = 15 * 60 * 1000;
 const RESET_TOKEN_EXPIRY = 10 * 60 * 1000;
+
 router.post(
   '/register',
   asyncHandler(async (req, res, next) => {
-    const userData = req.body;
-    const { phoneNumber, email, password, name } = userData;
-    const parsedUserData = registerSchema.safeParse(userData);
+    const { phoneNumber: phone_number, email, password ,name} = req.body
+    const parsedUserData = registerSchema.safeParse(req.body);
 
     if (!parsedUserData.success) {
       return res.status(400).json({
@@ -21,8 +23,10 @@ router.post(
         fieldErrors: parsedUserData.error.flatten().fieldErrors,
       });
     }
-    const existedUser = await userModel.findOne({
-      $or: [{ email: email }, { phoneNumber: phoneNumber }],
+
+
+    const existedUser = await findUser({
+      [Op.or]: [{ email }, { phone_number }],
     });
 
     if (existedUser) {
@@ -30,42 +34,42 @@ router.post(
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
-    const newUser = await userModel.create({
-      phoneNumber,
-      email,
-      name,
-      password: hashedPassword,
-    });
 
     const accessToken = jwt.sign(
-      { id: newUser._id, email: newUser.email },
+      { email },
       process.env.JWT_TOKEN || 'default-sign',
       { expiresIn: '15m' },
     );
 
     const refreshToken = jwt.sign(
-      { id: newUser._id },
+      { email },
       process.env.JWT_TOKEN || 'default-sign',
-      {
-        expiresIn: '7d',
-      },
+      { expiresIn: '7d' },
     );
 
-    await userModel.updateOne({ _id: newUser._id }, { refreshToken });
+    await createUser({
+      name,
+      email,
+      phone_number,
+      password: hashedPassword,
+      refresh_token: refreshToken,
+    });
+
     res.cookie('accessToken', accessToken, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: 'none',
+      secure: false,
+      sameSite: 'lax',
       maxAge: ACCESS_TOKEN_EXPIRY,
     });
+
     return res.status(201).json({
       message: 'user registered successfully',
-      userId: newUser._id,
+      email,
       accessToken,
-      refreshToken,
     });
   }),
 );
+
 
 router.post(
   '/login',

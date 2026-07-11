@@ -2,7 +2,6 @@ import express, { Router } from 'express';
 import jwt from 'jsonwebtoken';
 import { asyncHandler } from '../lib/funcs';
 import { userModel } from '../model';
-import { setFips } from 'node:crypto';
 
 const router: Router = express.Router();
 
