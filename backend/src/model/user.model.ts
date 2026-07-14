@@ -17,7 +17,7 @@ export class User extends Model<
   declare phone_number: string;
   declare password: string;
   declare refresh_token: string | null;
-  declare reset_code: string | null;
+  declare reset_code: number | null;
   declare reset_code_expires_at: Date | null;
 
   declare createdAt: CreationOptional<Date>;
@@ -40,7 +40,7 @@ User.init(
     email: {
       type: Types.STRING(150),
       allowNull: false,
-      
+
       unique: true,
     },
 
@@ -61,7 +61,7 @@ User.init(
     },
 
     reset_code: {
-      type: Types.STRING(20),
+      type: Types.STRING(6),
       allowNull: true,
     },
 
@@ -78,4 +78,3 @@ User.init(
     underscored: true,
   },
 );
-

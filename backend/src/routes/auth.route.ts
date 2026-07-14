@@ -5,7 +5,12 @@ import { userModel } from '../model';
 import bcrypt from 'bcrypt';
 import nodeMailer from 'nodemailer';
 import { registerSchema } from '../lib/verifacation';
-import { createUser, findUser } from '../repositories/user.repository';
+import {
+  createUser,
+  findAndUpdateUser,
+  findUser,
+  updateUser,
+} from '../repositories/user.repository';
 import { Op } from 'sequelize';
 const router: Router = express.Router();
 const ACCESS_TOKEN_EXPIRY = 15 * 60 * 1000;
@@ -14,7 +19,7 @@ const RESET_TOKEN_EXPIRY = 10 * 60 * 1000;
 router.post(
   '/register',
   asyncHandler(async (req, res, next) => {
-    const { phoneNumber: phone_number, email, password ,name} = req.body
+    const { phoneNumber: phone_number, email, password, name } = req.body;
     const parsedUserData = registerSchema.safeParse(req.body);
 
     if (!parsedUserData.success) {
@@ -23,7 +28,6 @@ router.post(
         fieldErrors: parsedUserData.error.flatten().fieldErrors,
       });
     }
-
 
     const existedUser = await findUser({
       [Op.or]: [{ email }, { phone_number }],
@@ -70,23 +74,22 @@ router.post(
   }),
 );
 
-
 router.post(
   '/login',
   asyncHandler(async (req, res, next) => {
     const userData = req.body;
-    console.log(userData);
+
     console.log(userData?.email, userData?.phoneNumber);
 
     let existedUser;
 
     if (userData?.email) {
-      existedUser = await userModel.findOne({
+      existedUser = await findUser({
         email: userData.email.toLowerCase().trim(),
       });
     } else {
-      existedUser = await userModel.findOne({
-        phoneNumber: userData.phoneNumber,
+      existedUser = await findUser({
+        phone_number: userData.phoneNumber,
       });
     }
 
@@ -108,7 +111,7 @@ router.post(
       process.env.JWT_TOKEN || 'default-sign',
       { expiresIn: '15m' },
     );
-    const refreshToken = existedUser.refreshToken;
+    const refreshToken = existedUser.refresh_token;
 
     const ACCESS_TOKEN_EXPIRY = 15 * 60 * 1000;
     const REFRESH_TOKEN_EXPIRY = 7 * 24 * 60 * 60;
@@ -133,27 +136,27 @@ router.post(
     // return res.json(req.body);
   }),
 );
+
 router.post(
   '/reset-code',
   asyncHandler(async (req, res) => {
     const { email } = req.body;
 
-    const existedUser = await userModel.findOne({ email });
-
+    const existedUser = await findUser({ email });
+    console.log(existedUser);
     if (!existedUser) {
-      return res.status(404).json({ message: 'User does not exist' });
+      return res.status(400).json({ message: 'User does not exist' });
     }
 
     const verificationCode = Math.floor(100000 + Math.random() * 900000);
     const expiresAt = new Date(Date.now() + 10 * 60 * 1000);
 
-    await userModel.findOneAndUpdate(
+    await findAndUpdateUser(
       { email },
       {
-        resetCode: verificationCode,
-        resetCodeExpiresAt: expiresAt,
+        reset_code: verificationCode,
+        reset_code_expires_at: expiresAt,
       },
-      { new: true },
     );
 
     const transport = nodeMailer.createTransport({
@@ -201,7 +204,7 @@ router.post(
   '/verify-code',
   asyncHandler(async (req, res, next) => {
     const { email, code } = req.body;
-    const existedUser = await userModel.findOne({ email });
+    const existedUser = await findUser({ email });
 
     if (!existedUser) {
       return res.status(404).json({
@@ -210,17 +213,17 @@ router.post(
     }
 
     if (
-      !existedUser.resetCodeExpiresAt ||
-      existedUser.resetCodeExpiresAt.getTime() < Date.now()
+      !existedUser.reset_code_expires_at ||
+      existedUser.reset_code_expires_at.getTime() < Date.now()
     ) {
       return res.status(400).json({
         message: 'Code has expired',
       });
     }
 
-    console.log(`main code ${existedUser.resetCode}`);
+    console.log(`main code ${existedUser.reset_code}`);
     console.log(`user code ${code}`);
-    if (existedUser.resetCode !== code) {
+    if (existedUser.reset_code !== code) {
       return res.status(400).json({
         message: 'Invalid code',
       });
@@ -228,7 +231,7 @@ router.post(
 
     const resetToken = jwt.sign(
       {
-        id: existedUser._id,
+        id: existedUser.id,
         purpose: 'reset-password',
       },
       process.env.JWT_TOKEN || 'default-sign',
@@ -248,8 +251,8 @@ router.post(
   '/reset-password',
   asyncHandler(async (req, res, next) => {
     const { password, email } = req.body;
-    const existedUser = await userModel.findOne({ email });
-
+    const existedUser = await findUser({ email });
+    console.log(existedUser);
     if (!existedUser) {
       return res.status(404).json({
         message: 'User does not exist',
@@ -258,11 +261,14 @@ router.post(
 
     console.log(password);
     const hashedPassword = await bcrypt.hash(password, 10);
-    await existedUser.updateOne({
-      password: hashedPassword,
-      resetCode: null,
-      resetCodeExpiresAt: null,
-    });
+    await updateUser(
+      { id: existedUser.id },
+      {
+        password: hashedPassword,
+        reset_code: null,
+        reset_code_expires_at: null,
+      },
+    );
     res.json({ message: 'Password was successfully reset' });
   }),
 );
@@ -280,13 +286,17 @@ router.post(
         refreshToken,
         process.env.JWT_TOKEN || 'default-sign',
       );
-      const user = await userModel.findOne({ refreshToken, _id: decode.id });
+      // const user = await userModel.findOne({ refreshToken, _id: decode.id });
+      const user = await findUser({
+        refresh_token: refreshToken,
+        id: decode.id,
+      });
 
       if (!user) {
         return res.status(401).json({ message: 'invalid refresh token' });
       }
       const accessToken = jwt.sign(
-        { id: user._id, email: user.email },
+        { id: user.id, email: user.email },
         process.env.JWT_TOKEN || 'default-sign',
         { expiresIn: '15m' },
       );
