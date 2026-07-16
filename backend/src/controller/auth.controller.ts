@@ -5,7 +5,7 @@ import nodeMailer from 'nodemailer';
 import { asyncHandler } from '../lib/funcs';
 import { userModel } from '../model';
 import { registerSchema } from '../lib/verifacation';
-
+import { configDotenv } from 'dotenv';
 // ----------------------------------------------------------------------------
 // Config
 // ----------------------------------------------------------------------------
