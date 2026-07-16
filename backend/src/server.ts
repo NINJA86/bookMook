@@ -45,7 +45,8 @@ app.use((err: any, req: Request, res: Response, next: NextFunction) => {
 
 const startServer = async (): Promise<void> => {
   await connectToDb();
-  await sequelize.sync({ alter: true });
+  await sequelize.sync();
+
   app.listen(port, () => {
     console.log(`Server running on http://localhost:${port}`);
   });

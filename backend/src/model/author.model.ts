@@ -1,12 +1,24 @@
 import { Schema, model } from 'mongoose';
 import { IAuthor } from '../lib/data';
 import sequelize from '../lib/db';
-import { DataTypes, Model } from 'sequelize';
+import {
+  CreationOptional,
+  DataTypes,
+  InferAttributes,
+  InferCreationAttributes,
+  Model,
+} from 'sequelize';
 
-export class Author extends Model {
+export class Author extends Model<
+  InferAttributes<Author, { omit: 'createdAt' | 'updatedAt' }>,
+  InferCreationAttributes<Author, { omit: 'createdAt' | 'updatedAt' }>
+> {
   declare id: number;
   declare name: string;
   declare bio: string;
+
+  declare createdAt: CreationOptional<Date>;
+  declare updatedAt: CreationOptional<Date>;
 }
 
 Author.init(

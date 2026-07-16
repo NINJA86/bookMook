@@ -14,8 +14,8 @@ export class Comment extends Model<
   declare id: CreationOptional<number>;
   declare text: string;
   declare rating: number;
-  declare location: string;
-  declare avatar: string;
+  declare location: string | null;
+  declare avatar: string | null;
   declare book_id: number;
   declare user_id: number;
   declare createdAt: CreationOptional<Date>;

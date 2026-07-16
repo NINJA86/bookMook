@@ -14,7 +14,7 @@ const authenticator = asyncHandler(async (req, res, next) => {
       process.env.JWT_TOKEN || 'default-sign',
     );
 
-    req.user = decode.id;
+    req.user = Number(decode.id);
     next();
   } catch (error: any) {
     if (error.name === 'TokenExpiredError') {

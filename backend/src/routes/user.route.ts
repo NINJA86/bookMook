@@ -1,7 +1,7 @@
 import express, { Router } from 'express';
 import jwt from 'jsonwebtoken';
 import { asyncHandler } from '../lib/funcs';
-import { userModel } from '../model';
+import { findUserById } from '../repositories/user.repository';
 
 const router: Router = express.Router();
 
@@ -22,15 +22,15 @@ router.get(
         return res.status(401).json({ message: 'token is invalid' });
       }
 
-      const user = await userModel.findById(decoded.id);
+      const user = await findUserById(decoded.id);
       console.log(user);
       req.user = decoded.id;
 
       return res.json({
-        _id: user?._id,
+        _id: user?.id,
         name: user?.name,
         email: user?.email,
-        phoneNumber: user?.phoneNumber,
+        phoneNumber: user?.phone_number,
       });
     } catch (error: any) {
       if (error.name === 'TokenExpiredError') {

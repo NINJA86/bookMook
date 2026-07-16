@@ -18,7 +18,6 @@ export class Book_tag extends Model<
   InferAttributes<Book_tag>,
   InferCreationAttributes<Book_tag>
 > {
-  declare id: CreationOptional<number>;
   declare bookId: number;
   declare tagId: number;
 }
@@ -148,14 +147,12 @@ Tag.init(
 
 Book_tag.init(
   {
-    id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
     bookId: {
       type: DataTypes.INTEGER,
       references: {
         model: 'books',
         key: 'id',
       },
-      allowNull: false,
     },
     tagId: {
       type: DataTypes.INTEGER,
@@ -171,5 +168,6 @@ Book_tag.init(
     sequelize,
     timestamps: false,
     tableName: 'book_tags',
+    underscored: true,
   },
 );

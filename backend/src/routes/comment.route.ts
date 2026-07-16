@@ -1,8 +1,8 @@
 import express, { Router } from 'express';
 import {
-  addComment,
   getCommentByBookId,
   getFeaturedComments,
+  sendComment,
 } from '../controller/comment.controller';
 import { idController } from '../middlewares/params.middleware';
 import {
@@ -14,7 +14,7 @@ const router: Router = express.Router();
 router.get('/featured', optionalAuthenticator, getFeaturedComments);
 router
   .route('/:id')
-  .get(idController, optionalAuthenticator, getCommentByBookId)
-  .post(authenticator, addComment);
+  .get(idController, optionalAuthenticator, getCommentByBookId);
 
+router.post('/', authenticator, sendComment);
 export default router;

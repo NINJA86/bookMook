@@ -21,7 +21,7 @@ Category.init(
     modelName: 'Category',
     sequelize,
     tableName: 'categories',
-    timestamps: true,
+    timestamps: false,
     underscored: true,
   },
 );

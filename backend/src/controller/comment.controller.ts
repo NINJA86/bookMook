@@ -1,66 +1,144 @@
-import mongoose from 'mongoose';
+import { Op } from 'sequelize';
 import { asyncHandler } from '../lib/funcs';
-import { commentModel } from '../model';
-import { IBook, IUser } from '../lib/data';
+import { Book, Comment, User } from '../model';
+import { addComment, findComments } from '../repositories/comment.repository';
+import { findBookById } from '../repositories/book.repository';
+import { findUserById } from '../repositories/user.repository';
 
-export const getCommentByBookId = asyncHandler(async (req, res, next) => {
-  const id = req.params.id;
-  const comment = await commentModel.find({ book: id }).populate<IUser>('user');
+export const getCommentByBookId = asyncHandler(async (req, res) => {
+  const bookId = Number(req.params.id);
 
-  console.log('comment');
-  if (!comment) {
+  const book = await Book.findByPk(bookId);
+
+  if (!book) {
     return res.status(404).json({
-      message: 'comment not found',
+      message: 'Book not found',
       statusCode: 404,
     });
   }
-  return res.json(comment);
+
+  const comments = await findComments(
+    {
+      book_id: bookId,
+    },
+    [
+      {
+        model: User,
+        as: 'user',
+        attributes: ['id', 'name'],
+      },
+    ],
+  );
+
+  return res.status(200).json({
+    statusCode: 200,
+    data: comments,
+  });
 });
 
-export const addComment = asyncHandler(async (req, res, next) => {
-  const { user, book, text, rating, location, avatar } = req.body;
+export const sendComment = asyncHandler(async (req, res) => {
+  if (!req.user) {
+    return res.status(401).json({
+      message: 'Unauthorized',
+      statusCode: 401,
+    });
+  }
 
-  // ✅ validate کردن ObjectId ها
-  if (
-    !mongoose.Types.ObjectId.isValid(user) ||
-    !mongoose.Types.ObjectId.isValid(book)
-  ) {
+  const userId = req.user;
+  const { book_id, text, rating, location } = req.body;
+
+  const bookId = Number(book_id);
+  const parsedRating = Number(rating);
+
+  if (Number.isNaN(bookId) || Number.isNaN(parsedRating)) {
     return res.status(400).json({
-      message: 'Invalid user or book ID',
+      message: 'Invalid data',
       statusCode: 400,
     });
   }
 
-  const result = await commentModel.create({
-    user,
-    book,
-    text,
-    rating,
-    location,
-    avatar,
+  if (!text?.trim()) {
+    return res.status(400).json({
+      message: 'Comment text is required',
+      statusCode: 400,
+    });
+  }
+
+  if (parsedRating < 1 || parsedRating > 5) {
+    return res.status(400).json({
+      message: 'Rating must be between 1 and 5',
+      statusCode: 400,
+    });
+  }
+
+  const [book, user] = await Promise.all([
+    findBookById(bookId),
+    findUserById(userId),
+  ]);
+
+  if (!book) {
+    return res.status(404).json({
+      message: 'Book not found',
+      statusCode: 404,
+    });
+  }
+
+  if (!user) {
+    return res.status(404).json({
+      message: 'User not found',
+      statusCode: 404,
+    });
+  }
+
+  const comment = await addComment({
+    user_id: userId,
+    book_id: bookId,
+    text: text.trim(),
+    rating: parsedRating,
+    location: location || null,
+    avatar: '/avatars/avatar-4.png',
   });
 
-  // ✅ منطق درست - if result یعنی موفق شد
-  if (!result) {
-    return res.status(400).json({
-      message: 'Adding comment has been failed',
-      statusCode: 400,
-    });
-  }
+  const result = await findBookById(comment.id, {
+    include: [
+      {
+        model: User,
+        as: 'user',
+        attributes: ['id', 'name'],
+      },
+    ],
+  });
 
   return res.status(201).json({
-    message: 'Comment has been successfully added',
+    message: 'Comment created successfully',
     statusCode: 201,
     data: result,
   });
 });
 
-export const getFeaturedComments = asyncHandler(async (req, res, next) => {
-  const featuredComments = await commentModel
-    .find({ rating: { $gte: 4 } })
-    .populate<IBook>('book', 'title slug')
-    .populate<IUser>('user', 'name')
-    .limit(10);
+export const getFeaturedComments = asyncHandler(async (req, res) => {
+  const comments = await findComments(
+    {
+      rating: {
+        [Op.gte]: 4,
+      },
+    },
+    [
+      {
+        model: Book,
+        as: 'book',
+        attributes: ['id', 'title', 'slug'],
+      },
+      {
+        model: User,
+        as: 'user',
+        attributes: ['id', 'name'],
+      },
+    ],
+  );
 
-  return res.json(featuredComments);
+  return res.status(200).json({
+    statusCode: 200,
+    data: comments,
+  });
 });

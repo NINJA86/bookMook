@@ -13,6 +13,10 @@ export const findUser = async (
   return await User.findOne(condition);
 };
 
+export const findUserById = async (id: number): Promise<User | null> => {
+  return await User.findByPk(id);
+};
+
 export const findAndUpdateUser = async (
   where: WhereOptions<User>,
   values: Partial<User>,

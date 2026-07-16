@@ -1,7 +1,6 @@
 import express, { Router } from 'express';
 import jwt from 'jsonwebtoken';
 import { asyncHandler } from '../lib/funcs';
-import { userModel } from '../model';
 import bcrypt from 'bcrypt';
 import nodeMailer from 'nodemailer';
 import { registerSchema } from '../lib/verifacation';
@@ -15,7 +14,6 @@ import { Op } from 'sequelize';
 const router: Router = express.Router();
 const ACCESS_TOKEN_EXPIRY = 15 * 60 * 1000;
 const RESET_TOKEN_EXPIRY = 10 * 60 * 1000;
-
 router.post(
   '/register',
   asyncHandler(async (req, res, next) => {
@@ -39,25 +37,28 @@ router.post(
 
     const hashedPassword = await bcrypt.hash(password, 10);
 
+    const newUser = await createUser({
+      name,
+      email,
+      phone_number,
+      password: hashedPassword,
+      refresh_token: '',
+    });
+
     const accessToken = jwt.sign(
-      { email },
+      { id: newUser.id, email },
       process.env.JWT_TOKEN || 'default-sign',
       { expiresIn: '15m' },
     );
 
     const refreshToken = jwt.sign(
-      { email },
+      { id: newUser.id, email },
       process.env.JWT_TOKEN || 'default-sign',
       { expiresIn: '7d' },
     );
 
-    await createUser({
-      name,
-      email,
-      phone_number,
-      password: hashedPassword,
-      refresh_token: refreshToken,
-    });
+    newUser.refresh_token = refreshToken;
+    await newUser.save();
 
     res.cookie('accessToken', accessToken, {
       httpOnly: true,
@@ -286,7 +287,6 @@ router.post(
         refreshToken,
         process.env.JWT_TOKEN || 'default-sign',
       );
-      // const user = await userModel.findOne({ refreshToken, _id: decode.id });
       const user = await findUser({
         refresh_token: refreshToken,
         id: decode.id,

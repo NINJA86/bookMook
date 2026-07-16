@@ -2,10 +2,7 @@ import express, { Router } from 'express';
 
 import { getAllBooks, getBookBySlug } from '../controller/book.controller';
 import { slugController } from '../middlewares/params.middleware';
-import {
-  authenticator,
-  optionalAuthenticator,
-} from '../middlewares/authenticate';
+import { optionalAuthenticator } from '../middlewares/authenticate';
 
 const router: Router = express.Router();
 
