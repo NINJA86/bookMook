@@ -17,7 +17,7 @@ export class User extends Model<
   declare phone_number: string;
   declare password: string;
   declare refresh_token: string | null;
-  declare reset_code: number | null;
+  declare reset_code: string | null;
   declare reset_code_expires_at: Date | null;
 
   declare createdAt: CreationOptional<Date>;
