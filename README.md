@@ -23,7 +23,7 @@ A full-stack online bookstore built with Next.js and Express.
 ```
 bookmook/
 ├── frontend/   # Next.js app #
-└── backend/    # Express + MongoDB API
+└── backend/    # Express + sql API
 ```
 
 ---
@@ -39,7 +39,7 @@ bookmook/
 **Backend**
 
 - Express 5, TypeScript
-- MongoDB + Mongoose
+- Sql + Sequelize
 - dotenv, cors
 
 ---
@@ -90,10 +90,13 @@ SMTP_PASSWORD= your_SMTP_PASSWORD
 SMTP_FROM_ADDRESS= your_SMTP_FROM_ADDRESS
 ```
 
+for generating the dist folder
+
 ```bash
 # npm run dev
 npm run watch:build
 ```
+run the server
 
 ```bash
 npm run watch:run
